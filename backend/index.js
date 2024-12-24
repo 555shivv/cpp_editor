@@ -7,7 +7,7 @@ const compilex = require('compilex');
 const app = express();
 //app.use(cors()); // Add this line to enable CORS
 app.use(express.json());
-app.use(cors({ origin: 'https://helpful-dusk-1267f0.netlify.app/' }));
+app.use(cors({ origin: 'https://helpful-dusk-1267f0.netlify.app/compile' }));
 
 
 // Compilex initialization
