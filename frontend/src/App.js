@@ -23,9 +23,12 @@ function App() {
     formData.append('code', file);
 
     try {
-      const response = await axios.post('http://localhost:5000/compile', formData, {
+     /* const response = await axios.post('http://localhost:5000/compile', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      });*/
+      const response = await axios.post('https://cpp-editor-mcb7.onrender.com/compile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        });
 
       if (response.data.output) {
         setOutput(response.data.output);
