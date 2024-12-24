@@ -13,7 +13,7 @@ app.use(express.json());
 // Compilex initialization
 compilex.init({
   stats: true,
-  options: { timeout: 5000 },  // Add timeout for compilation
+  options: { timeout: 10000 },  // Add timeout for compilation
 });
 
 // Multer configuration for file uploads
@@ -26,7 +26,7 @@ app.post('/compile', upload.single('code'), (req, res) => {
     return res.status(400).json({ message: 'No file uploaded' });
   }
 
-  const envData = { OS: 'windows', cmd: 'g++', options: { timeout: 5000 } };
+  const envData = { OS: 'windows', cmd: 'g++', options: { timeout: 10000 } };
 
   fs.readFile(filePath, 'utf8', (err, code) => {
     if (err) {
