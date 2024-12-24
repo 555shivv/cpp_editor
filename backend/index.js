@@ -31,15 +31,22 @@ app.post('/compile', upload.single('code'), (req, res) => {
   fs.readFile(filePath, 'utf8', (err, code) => {
     if (err) {
       console.error('Error reading file:', err);
-      return res.status(500).send('Error reading file.');
+      if (!res.headersSent) {
+        return res.status(500).send('Error reading file.');
+      }
+      return;
     }
 
     compilex.compileCPP(envData, code, (data) => {
-      if (data.error) {
-        return res.status(500).send(`Compilation Error: ${data.error}`);
-      } else {
-        return res.send({ output: data.output });
-      }
+        if (data.error) {
+            if (!res.headersSent) {
+              return res.status(500).send(`Compilation Error: ${data.error}`);
+            }
+          } else {
+            if (!res.headersSent) {
+              return res.send({ output: data.output });
+            }
+        }
     });
   });
 });
