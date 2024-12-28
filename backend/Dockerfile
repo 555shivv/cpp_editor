@@ -8,7 +8,13 @@ WORKDIR /app/backend
 COPY . .
 
 # Install Node.js and dependencies (if not already included in the base image)
-RUN apt-get update && apt-get install -y nodejs npm
+RUN apt-get update && apt-get install -y \
+    nodejs \
+    npm \
+    && apt-get clean
+
+# Verify g++ is installed
+RUN g++ --version
 
 # Install project dependencies
 RUN npm install

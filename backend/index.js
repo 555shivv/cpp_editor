@@ -16,8 +16,9 @@ compilex.init({
   options: { timeout: 10000 }, // Add timeout for compilation
 });
 
-// Configure Multer for file uploads
-const upload = multer({ dest: 'temp/' });
+// Configure Multer to store files in memory (buffer)
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 // Route to handle file upload and compilation
 app.post('/compile', upload.single('code'), (req, res) => {
@@ -25,25 +26,16 @@ app.post('/compile', upload.single('code'), (req, res) => {
     return res.status(400).json({ message: 'No file uploaded' });
   }
 
-  const filePath = req.file.path;
+  const code = req.file.buffer.toString('utf8');  // Get the file content as string
 
-  fs.readFile(filePath, 'utf8', (err, code) => {
-    if (err) {
-      console.error('Error reading file:', err);
-      fs.unlinkSync(filePath); // Delete file to clean up
-      return res.status(500).send('Error reading file.');
+  const envData = { OS: 'windows', cmd: 'g++', options: { timeout: 10000 } };
+
+  compilex.compileCPP(envData, code, (data) => {
+    if (data.error) {
+      console.error('Compilation Error:', data.error);
+      return res.status(500).send({ error: `Compilation Error: ${data.error}` });
     }
-
-    const envData = { OS: 'windows', cmd: 'g++', options: { timeout: 10000 } };
-
-    compilex.compileCPP(envData, code, (data) => {
-      fs.unlinkSync(filePath); // Cleanup the temporary file
-      if (data.error) {
-        console.error('Compilation Error:', data.error);
-        return res.status(500).send({ error: `Compilation Error: ${data.error}` });
-      }
-      return res.json({ output: data.output });
-    });
+    return res.json({ output: data.output });
   });
 });
 

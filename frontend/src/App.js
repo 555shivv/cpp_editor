@@ -6,9 +6,12 @@ function App() {
   const [file, setFile] = useState(null);
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // New: Loading indicator
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+    setOutput('');
+    setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -18,26 +21,32 @@ function App() {
       setError('Please upload a file.');
       return;
     }
-    setError('');
+
     const formData = new FormData();
     formData.append('code', file);
 
+    setLoading(true); // Start loading
+    setError('');
+    setOutput('');
+
     try {
-      const response = await axios.post('http://localhost:5000/compile', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      /*const response = await axios.post('https://cpp-editor-mcb7.onrender.com/compile', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-        });*/
+      const response = await axios.post(
+        'http://localhost:5000/compile', // Ensure this matches your backend endpoint
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
 
       if (response.data.output) {
         setOutput(response.data.output);
       } else {
-        setError('No output received.');
+        setError('No output received from server.');
       }
     } catch (err) {
-      setOutput('');
       setError(err.response?.data?.error || 'Error occurred during file execution.');
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -52,8 +61,8 @@ function App() {
           required
           className="file-input"
         />
-        <button type="submit" className="submit-button">
-          Upload and Run
+        <button type="submit" className="submit-button" disabled={loading}>
+          {loading ? 'Running...' : 'Upload and Run'}
         </button>
       </form>
       {error && <div className="error-message">{error}</div>}
