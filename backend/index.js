@@ -6,47 +6,43 @@ const compilex = require('compilex');
 
 const app = express();
 
-// Enable CORS for specific origin
+// Enable CORS for all origins
 app.use(cors());
 app.use(express.json());
 
-// Compilex initialization
+// Initialize Compilex
 compilex.init({
   stats: true,
-  options: { timeout: 10000 },  // Add timeout for compilation
+  options: { timeout: 10000 }, // Add timeout for compilation
 });
 
-// Multer configuration for file uploads
+// Configure Multer for file uploads
 const upload = multer({ dest: 'temp/' });
 
+// Route to handle file upload and compilation
 app.post('/compile', upload.single('code'), (req, res) => {
-  const filePath = req.file.path;
-
   if (!req.file) {
     return res.status(400).json({ message: 'No file uploaded' });
   }
 
-  const envData = { OS: 'windows', cmd: 'g++', options: { timeout: 10000 } };
+  const filePath = req.file.path;
 
   fs.readFile(filePath, 'utf8', (err, code) => {
     if (err) {
       console.error('Error reading file:', err);
-      if (!res.headersSent) {
-        return res.status(500).send('Error reading file.');
-      }
-      return;
+      fs.unlinkSync(filePath); // Delete file to clean up
+      return res.status(500).send('Error reading file.');
     }
 
+    const envData = { OS: 'windows', cmd: 'g++', options: { timeout: 10000 } };
+
     compilex.compileCPP(envData, code, (data) => {
-        if (data.error) {
-            if (!res.headersSent) {
-              return res.status(500).send(`Compilation Error: ${data.error}`);
-            }
-          } else {
-            if (!res.headersSent) {
-              return res.send({ output: data.output });
-            }
-        }
+      fs.unlinkSync(filePath); // Cleanup the temporary file
+      if (data.error) {
+        console.error('Compilation Error:', data.error);
+        return res.status(500).send({ error: `Compilation Error: ${data.error}` });
+      }
+      return res.json({ output: data.output });
     });
   });
 });
