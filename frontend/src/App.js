@@ -29,7 +29,8 @@ function App() {
     setError('');
     setOutput('');
     //const host= '13.60.94.122';
-    const URL= process.env.BACKEND_URL;
+    const URL= process.env.BACKEND_URL || "http://localhost:5000";
+    console.log(URL,"hiii");
     try {
       const response = await axios.post(
         `${URL}/compile`, // Ensure this matches your backend endpoint
