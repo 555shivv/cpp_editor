@@ -29,10 +29,10 @@ function App() {
     setError('');
     setOutput('');
     //const host= '13.60.94.122';
-
+    const URL= process.env.BACKEND_URL;
     try {
       const response = await axios.post(
-        `https://cpp-editor-mcb7.onrender.com/compile`, // Ensure this matches your backend endpoint
+        `${URL}/compile`, // Ensure this matches your backend endpoint
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
