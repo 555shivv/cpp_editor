@@ -28,10 +28,11 @@ function App() {
     setLoading(true); // Start loading
     setError('');
     setOutput('');
+    //const host= '13.60.94.122';
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/compile', // Ensure this matches your backend endpoint
+        `https://cpp-editor-mcb7.onrender.com/compile`, // Ensure this matches your backend endpoint
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
@@ -41,7 +42,7 @@ function App() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });*/
       
-
+      //console.log("hiiiiiiii")
       if (response.data.output) {
         setOutput(response.data.output);
       } else {
