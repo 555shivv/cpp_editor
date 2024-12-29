@@ -37,6 +37,10 @@ function App() {
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       );
+      /*const response = await axios.post('http://host.docker.internal:5000/compile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });*/
+      
 
       if (response.data.output) {
         setOutput(response.data.output);
