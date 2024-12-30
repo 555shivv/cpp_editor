@@ -31,7 +31,7 @@ function App() {
 
     try {
       // Make the POST request to your backend (running on localhost:5000)
-      const response = await axios.post('http://localhost:5000/compile', formData, {
+      const response = await axios.post('https://cpp-editor-mcb7.onrender.com/compile', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
