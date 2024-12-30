@@ -6,11 +6,11 @@ function App() {
   const [file, setFile] = useState(null);
   const [output, setOutput] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false); // New: Loading indicator
+  const [loading, setLoading] = useState(false); // Loading indicator
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
-    setOutput('');
+    setOutput('');  // Clear output and error when file is changed
     setError('');
   };
 
@@ -23,31 +23,29 @@ function App() {
     }
 
     const formData = new FormData();
-    formData.append('code', file);
+    formData.append('code', file); // Add file to form data
 
-    setLoading(true); // Start loading
-    setError('');
-    setOutput('');
+    setLoading(true);  // Start loading
+    setError('');  // Reset error message
+    setOutput('');  // Reset output
 
     try {
-      const response = await axios.post(
-        process.env.BACKEND_URL || "https://cpp-editor-mcb7.onrender.com/compile", // Ensure the backend URL is correct
-        formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
-      );
+      // Make the POST request to your backend (running on localhost:5000)
+      const response = await axios.post('http://localhost:5000/compile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
 
+      // Handle the response data from the backend (which is the JDoodle output)
       if (response.data.output) {
         setOutput(response.data.output);
       } else {
-        setError('No output received from server.');
+        setError('No output received from the server.');
       }
     } catch (err) {
-      console.error("Error occurred during API call:", err); // Proper error logging
+      console.error("Error occurred during API call:", err); // Log error
       setError(err.response?.data?.error || 'Error occurred during file execution.');
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);  // Stop loading once the request completes
     }
   };
 
@@ -57,7 +55,7 @@ function App() {
       <form className="compiler-form" onSubmit={handleSubmit}>
         <input
           type="file"
-          accept=".c,.cpp"
+          accept=".c,.cpp"  // Only accept C and C++ files
           onChange={handleFileChange}
           required
           className="file-input"
