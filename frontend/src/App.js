@@ -28,32 +28,23 @@ function App() {
     setLoading(true); // Start loading
     setError('');
     setOutput('');
-    //const host= '13.60.94.122';
-    const URL= process.env.BACKEND_URL;
-    console.log('File uploaded:', file);
-console.log('Form submitted:', e);
-console.log('Response received:', response);
-console.log('Error occurred:', err);;
-    console.log(URL,"hiii");
+
     try {
       const response = await axios.post(
-        "https://cpp-editor-mcb7.onrender.com/compile", // Ensure this matches your backend endpoint
+        process.env.BACKEND_URL || "https://cpp-editor-mcb7.onrender.com/compile", // Ensure the backend URL is correct
         formData,
         {
           headers: { 'Content-Type': 'multipart/form-data' },
         }
       );
-      /*const response = await axios.post('http://host.docker.internal:5000/compile', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });*/
-      
-      //console.log("hiiiiiiii")
+
       if (response.data.output) {
         setOutput(response.data.output);
       } else {
         setError('No output received from server.');
       }
     } catch (err) {
+      console.error("Error occurred during API call:", err); // Proper error logging
       setError(err.response?.data?.error || 'Error occurred during file execution.');
     } finally {
       setLoading(false); // Stop loading
