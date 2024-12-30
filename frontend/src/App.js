@@ -29,7 +29,10 @@ function App() {
     setError('');
     setOutput('');
     //const host= '13.60.94.122';
-    const URL= process.env.BACKEND_URL;
+    const URL= process.env.BACKEND_URLconsole.log('File uploaded:', file);
+console.log('Form submitted:', e);
+console.log('Response received:', response);
+console.log('Error occurred:', err);;
     console.log(URL,"hiii");
     try {
       const response = await axios.post(
