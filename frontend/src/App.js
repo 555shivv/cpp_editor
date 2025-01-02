@@ -34,6 +34,9 @@ function App() {
       const response = await axios.post('https://cpp-editor-mcb7.onrender.com/compile', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
+     /* const response = await axios.post('http://localhost:5000/compile', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        });*/
 
       // Handle the response data from the backend (which is the JDoodle output)
       if (response.data.output) {
@@ -51,7 +54,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1 className="app-title">Online C/C++ Compiler</h1>
+      <h1 className="app-title">Online C++ Compiler</h1>
       <form className="compiler-form" onSubmit={handleSubmit}>
         <input
           type="file"

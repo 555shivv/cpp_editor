@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: cpp-online-compiler
+    env: node
+    buildCommand: |
+      apt-get update
+      apt-get install -y g++
+      npm install
+    startCommand: npm start
